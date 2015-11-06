@@ -42,6 +42,9 @@ yield_Mid <- yieldCurves$Mid
 yield_Agg <- yieldCurves$Agg
 rm(yieldCurves)
 
+# calculate SSB 
+# function <getSSB()> is defined in Function.R
+annualSSB <- getSSB()
 
 ##########################################################################################
 
