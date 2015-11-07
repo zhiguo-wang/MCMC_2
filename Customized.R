@@ -46,6 +46,15 @@ rm(yieldCurves)
 # function <getSSB()> is defined in Function.R
 annualSSB <- getSSB()
 
+
+# Weight of saving investment (Low risk, Mid risk, Aggressive risk);
+# Used when calculating 401k, retirement saving, ..
+perAgg <- (retireAge - currentAge) / retireAge
+## % on Moderate Risk = (1 - % on Aggressive Risk) / 2
+perMid <- (1 - perAgg) / 2
+## % on Low Risk = (1 - % on Aggressive Risk) / 2
+perLow <- (1 - perAgg) / 2
+
 ##########################################################################################
 
 
