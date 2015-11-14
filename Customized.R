@@ -20,7 +20,6 @@
 
 # Load Functions
 source(paste0(root, sourceCode,"functions.R"))
-source(paste0(root, sourceCode,"IndCha.R"))
 source(paste0(root, sourceCode,"EcoAss.R"))
 
 preYears <- retireAge - currentAge 
@@ -57,15 +56,6 @@ perLow <- (1 - perAgg) / 2
 
 ##########################################################################################
 
-
-## Customized Allocation for Pre
-## 1. Healthcare Expenses 2. Term Life 3. Whole Life 4. Disability Insurance 5. 401k
-
-pre_allocation <- c(2000, 100, 200, 1500, 3000)
-
-
-pre_customized_ruin <- function(pre_allocation) {
-  
 source(paste0(root, sourceCode, "Pre_CashFlow_ActualBudget.R"))
 
 source(paste0(root, sourceCode, "Pre_CashFlow_ExistingEmployee&Employer.R"))
@@ -85,6 +75,15 @@ source(paste0(root, sourceCode, "Pre_CashFlow_DI.R"))
 source(paste0(root, sourceCode, "Pre_CashFlow_Mortgage.R"))
 
 source(paste0(root, sourceCode, "Pre_CashFlow_Rent.R"))
+
+
+## Customized Allocation for Pre
+## 1. Healthcare Expenses 2. Term Life 3. Whole Life 4. Disability Insurance 5. 401k
+
+pre_allocation <- c(2000, 100, 200, 1500, 3000)
+
+
+pre_customized_ruin <- function(pre_allocation) {
 
 ## Test pre_allocation by actual budget
 

@@ -85,81 +85,25 @@ endingAssets <- 0
 
 unitEnding401k <- function() {
   
-  vec_401k <- rep(1, nrow(pre_mcmc))
+  vec_401k <- (1 + wageInflation) ^ (1 : preYears -1)
   
-  for (i in 2 : nrow(pre_mcmc)) {
-    vec_401k[i] <- 1 * (1 + wageInflation) ^ (i - 1)
-  }
-  
-  mat_401k <- replicate(ncol(pre_mcmc), vec_401k)
-  
-  mat_401k[which(pre_mcmc != 1)] <- 0
+  mat_401k <- vec_401k * (pre_mcmc == 1)
+
   
   ### Low Risk
   
-  pre_cashIn_401k_Low <- matrix(0, nrow(pre_mcmc), ncol(pre_mcmc))
+  pre_cashIn_401k_Low <- getAccValue(mat_401k * perLow, yield_Low, mat.death)
   
-  for(i in 1 : ncol(pre_mcmc)) {
-    pre_accumulatedValue <- 0
-    for (j in 1 : max(which(pre_mcmc[ , i] == 1))) {
-      pre_accumulatedValue <- pre_accumulatedValue +
-        mat_401k[j, i] * perLow * 
-        prod(yield_Low[j : max(which(pre_mcmc[ , i] == 1)), i])
-    }
-    pre_cashIn_401k_Low[max(which(pre_mcmc[ , i] == 1)), i] <- pre_accumulatedValue
-  }
-  
-  #### Adjust the time points of scenarios that an individual died before retirement age
-  
-  for (i in scenarioCol_401k) {
-    pre_cashIn_401k_Low[adj_scenario_401k[which(scenarioCol_401k == i)] + 1, i] <- 
-      pre_cashIn_401k_Low[adj_scenario_401k[which(scenarioCol_401k == i)], i]
-    pre_cashIn_401k_Low[adj_scenario_401k[which(scenarioCol_401k == i)], i] <- 0
-  }
   
   ### Moderate Risk
   
-  pre_cashIn_401k_Mid <- matrix(0, nrow(pre_mcmc), ncol(pre_mcmc))
+  pre_cashIn_401k_Mid <- getAccValue(mat_401k * perMid, yield_Mid, mat.death)
   
-  for(i in 1 : ncol(pre_mcmc)) {
-    pre_accumulatedValue <- 0
-    for (j in 1 : max(which(pre_mcmc[ , i] == 1))) {
-      pre_accumulatedValue <- pre_accumulatedValue +
-        mat_401k[j, i] * perMid * 
-        prod(yield_Mid[j : max(which(pre_mcmc[ , i] == 1)), i])
-    }
-    pre_cashIn_401k_Mid[max(which(pre_mcmc[ , i] == 1)), i] <- pre_accumulatedValue
-  }
-  
-  #### Adjust the time points of scenarios that an individual died before retirement age
-  
-  for (i in scenarioCol_401k) {
-    pre_cashIn_401k_Mid[adj_scenario_401k[which(scenarioCol_401k == i)] + 1, i] <- 
-      pre_cashIn_401k_Mid[adj_scenario_401k[which(scenarioCol_401k == i)], i]
-    pre_cashIn_401k_Mid[adj_scenario_401k[which(scenarioCol_401k == i)], i] <- 0
-  }
   
   ### Aggressive Risk
   
-  pre_cashIn_401k_Agg <- matrix(0, nrow(pre_mcmc), ncol(pre_mcmc))
+  pre_cashIn_401k_Agg <- getAccValue(mat_401k * perAgg, yield_Agg, mat.death)
   
-  for(i in 1 : ncol(pre_mcmc)) {
-    pre_accumulatedValue <- 0
-    for (j in 1 : max(which(pre_mcmc[ , i] == 1))) {
-      pre_accumulatedValue <- pre_accumulatedValue +
-        mat_401k[j, i] * perAgg * 
-        prod(yield_Agg[j : max(which(pre_mcmc[ , i] == 1)), i])
-    }
-    pre_cashIn_401k_Agg[max(which(pre_mcmc[ , i] == 1)), i] <- pre_accumulatedValue
-  }
-  
-  #### Adjust the time points of scenarios that an individual died before retirement age
-  
-  for (i in scenarioCol_401k) {
-    pre_cashIn_401k_Agg[adj_scenario_401k[which(scenarioCol_401k == i)] + 1, i] <- 
-      pre_cashIn_401k_Agg[adj_scenario_401k[which(scenarioCol_401k == i)], i]
-    pre_cashIn_401k_Agg[adj_scenario_401k[which(scenarioCol_401k == i)], i] <- 0
-  }
   
   ## Ideal 401k
   

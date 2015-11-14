@@ -99,5 +99,7 @@ for (i in 1 : 20) {
 
 actBudget <- IndCha$Actual.Budget..not.including.costs.of.existing.coverage.
 
+numDpt <- IndCha$Number.of.Dependents
+
 # remove useless variable, release memory
 rm(IndCha)

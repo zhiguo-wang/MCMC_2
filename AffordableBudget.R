@@ -18,8 +18,6 @@
 #
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-source(paste0(root, sourceCode,"IndCha.R"))
-
 # Basic Living Expense equation: y = 5313.68 +  0.17933*annualIncome + 0*currentAge
 # Health Care equation: y = -780.22 - 0.00000*annualIncome +  80.2086*currentAge
 # Discretionary Expense equation: y = 1311.35 + 0.28817*annualIncome - 120.370*currentAge
@@ -27,7 +25,7 @@ source(paste0(root, sourceCode,"IndCha.R"))
 # Rent equation: y = 6748.81 +0*annualIncome -82.01*currentAge
 # MortgcurrentAge equation: y = -2658.51 + 0.12*annualIncome + 0*currentAge
 
-affordableBudget <- function() {
+GetAffordableBudget <- function() {
   
   basicLiving <- 5313.68 + 0.17933 * annualIncome
   
@@ -47,5 +45,3 @@ affordableBudget <- function() {
   return(affBudget)
   
 }
-
-affBudget <- affordableBudget()

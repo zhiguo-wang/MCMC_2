@@ -19,9 +19,7 @@
 #
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-source(paste0(root, sourceCode,"Customized.R"))
 
-source(paste0(root, sourceCode, "Pre_CashFlow_HC.R"))
 
 ## Input the hierarchy of priority of each financial products
 hierarchy <- read.csv(paste0(root,"Inputs\\Hierarchy\\Hierarchy.csv"), header = TRUE)

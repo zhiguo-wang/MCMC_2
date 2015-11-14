@@ -101,38 +101,6 @@ getPreYieldCurves <- function(preYears){
     return(list("Low" = yield_Low, "Mid" = yield_Mid, "Agg" = yield_Agg))
 }
 
-# Compute Accumulative yield factor (r1,r2,r3,...)
-# AV = CF1 * r1 + CF2 * r2 ....
-# Return: matrix[preYears, 1000]
-#    r11  r12  r13...
-#    r21  r22  r23...
-#    ...  ...  ...
-getAccFactor <- function(yieldCurves, pre_mcmc){
-    yieldCurves <- yield_Low * (pre_mcmc == 1)
-    yieldCurves[which(yieldCurves == 0)] <- 1 
-    for(i in (nrow(yieldCurves) - 1) : 1){
-        yieldCurves[i,] <- yieldCurves[i,] * yieldCurves[i+1,]
-    }
-    return(yieldCurves* (pre_mcmc == 1))
-}
-
-# Return a matrix which -- version 1022
-#  each element is an accumulated value for each scenario;
-#  each element is accumulated from CurrentAge to " the Last Healthy"
-#  Parameters: CF -- cash flow matrix
-#              r  -- rate matrix
-getAccValue1 <- function(mat.CF, mat.r){
-       
-    # Return matrix is the same size as Cash Flow matrix
-    accMatrix <- 0 * mat.CF
-    accMatrix[1,] <- mat.CF[1,] * mat.r[1,]
-    for(i in 2 : nrow(mat.CF)){
-        accMatrix[i,] <- (mat.CF[i,] + accMatrix[i-1,]) *  mat.r[i,]        
-    }
-    ### "pre_mcmc" need to be pre-calculated in <customized.R>
-    return(accMatrix * getMatrixLastH(pre_mcmc))
-}
-
 
 # Return a matrix which -- version 1102
 #  each element is an accumulated value for each scenario;
