@@ -85,9 +85,9 @@ post_mat_income <- replicate(ncol(post_mcmc), post_vec_income)
 
 post_mat_income[nrow(post_mcmc), ] <- 0
 
-## Assumption of Retirement Financial Needs: Substitution Rate of Wage = 0.75
-## Assumption of LTC Needs: Substitution Rate of Wage = 0.75 * 2 = 1.50
-post_cashOut_RetirementNeeds <- -post_vec_income * 0.75 * ((post_mcmc == 1) + (post_mcmc == 2) * 2)
+## Assumption of Retirement Financial Needs: Substitution Rate of Wage = 0.7
+## Assumption of LTC Needs: Substitution Rate of Wage = 0.7 * 1.5 = 1.05
+post_cashOut_RetirementNeeds <- -post_vec_income * 0.7 * ((post_mcmc == 1) + (post_mcmc == 2) * 1.5)
 post_cashOut_RetirementNeeds <- (post_cashOut_RetirementNeeds + annualSSB) * (post_mcmc != 3)
 
 generalDiscountFactor <- (1 + generalInflation) ^ (-(1:nrow(post_mcmc))+1)
