@@ -52,6 +52,7 @@ yearMortPeriod <- monMortPeriod %/% 12
 
 remainMonMort <- monMortPeriod %% 12 
 
+
 cashOut_Mortgage[1 : yearMortPeriod, ] <- monMortPay * 12
 
 cashOut_Mortgage[yearMortPeriod + 1, ] <- monMortPay * remainMonMort

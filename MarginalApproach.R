@@ -18,14 +18,9 @@
 #
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-source(paste0(root, sourceCode,"Customized.R"))
-
-source(paste0(root, sourceCode, "Pre_CashFlow_HC.R"))
-
 ## Ideal Allocation for Pre
 ## 1. Healthcare Expenses 2. Term Life 3. Whole Life 4. Disability Insurance 5. 401k
 
-preIdeal_allocation <- c(0, 0, 0, 0, 12500)
 
 marginalApproach <- function(idealAllocation) {
     
@@ -33,7 +28,7 @@ marginalApproach <- function(idealAllocation) {
   
   idealAllocation[1] <- - cashOut_Healthcare[1]
   
-  stepWidth <- 100
+  stepWidth <- 200
   
   ruinProb <- c(1.1, 0, 0, 0, 0)
   

@@ -78,7 +78,7 @@ marginalApproach_hierarchy <- function(preIdeal_allocation) {
   
   originalAllocation <- preIdeal_allocation
   
-  stepWidth <- 500
+  stepWidth <- 200
   
   ruinProb <- c(1.1, 0, 0, 0, 0)
   
