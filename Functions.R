@@ -151,7 +151,7 @@ getSSB <- function(){
     if (retireAge < 67) {
         adjFactor <- min(3, 67-retireAge) * (12 * 5 / 900) +
             max(0, 67-retireAge - 3) * (12 * 5 / 1200)
-    } else if (retAge >= 67) {
+    } else if (retireAge >= 67) {
         adjFactor <- max(3, retireAge - 67) * (12 * 16 / 2400)
     }
     
