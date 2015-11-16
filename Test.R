@@ -3,11 +3,11 @@
 # Read in Test Points
 testPoints <- read.csv(paste0(root,"Inputs\\DataTests\\IndChaModelPoints.csv"), header = TRUE)
 
-results <- matrix(0, nrow = 10, ncol = 24)
-colnames(results) <- c("Ideal Budget", "Ideal H", "Ideal Term", "Ideal Di", "Ideal Perm", "Ideal Ret", "IdealRP", 
-                       "Rank H", "Rank Term", "Rank Perm", "Rank Disable",
+results <- matrix(0, nrow = 10, ncol = 25)
+colnames(results) <- c("Ideal Budget", "Ideal H", "Ideal Term", "Ideal Perm", "Ideal Di", "Ideal Ret", "IdealRP", 
+                       "Rank H", "Rank Term", "Rank Perm", "Rank Disable", "Rank Retirement"
                        "Actual Budget", "OPT H", "OPT Term", "OPT Perm","OPT Di", "OPT Ret", "OPT RUIN",
-                       "adjOPT H", "adjOPT Term", "adjOPT Di", "adjOPT Perm", "adjOPT Ret", "adjOPT Ruin")
+                       "adjOPT H", "adjOPT Term", "adjOPT Perm", "adjOPT Di", "adjOPT Ret", "adjOPT Ruin")
 
 for(caseID in 1:10){    
     # Set values to variables
@@ -36,13 +36,14 @@ for(caseID in 1:10){
     results[caseID, 9] <- cusRank[[2]]
     results[caseID, 10] <- cusRank[[3]]
     results[caseID, 11] <- cusRank[[4]]
+    results[caseID, 12] <- cusRank[[5]]
     
-    results[caseID, 12] = sum(ALLOC.OPT)
-    results[caseID, 13:17] = ALLOC.OPT
-    results[caseID, 18] = rp.OPT
+    results[caseID, 13] = sum(ALLOC.OPT)
+    results[caseID, 14:18] = ALLOC.OPT
+    results[caseID, 19] = rp.OPT
     
-    results[caseID, 19:23] = ALLOC.adjOPT
-    results[caseID, 24] = rp.adjOPT
+    results[caseID, 20:24] = ALLOC.adjOPT
+    results[caseID, 25] = rp.adjOPT
 }
 
 
