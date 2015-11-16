@@ -70,66 +70,68 @@ cusRank <- ranking()
 
 
 
-marginalApproach_hierarchy <- function(preIdeal_allocation) {
+marginalApproach_hierarchy <- function(ideal) {
   
   ## Healthcare expenses will be always fully covered
   
-  preIdeal_allocation[1] <- - cashOut_Healthcare[1]
-  
-  originalAllocation <- preIdeal_allocation
-  
+  ideal[1] <- - cashOut_Healthcare[1]
+    
   stepWidth <- 200
   
   ruinProb <- c(1.1, 0, 0, 0, 0)
   
-  satisfaction <- c(1, 1, 1, 1, 1)
+  allocation <- ideal
   
-  budget <- sum(preIdeal_allocation)
+  budget <- sum(allocation)
   
   while(budget > actBudget) {
     
-    stfc1 <- satisfaction
-    
-    stfc2 <- satisfaction
-    
-    stfc2[2 : 5] <- (preIdeal_allocation[2 : 5] - stepWidth) / originalAllocation[2 : 5]
+    stfc1 <- allocation / ideal
+        
+    stfc2 <- max(0, allocation - stepWidth) / ideal
     
     ## Under the hierarchy, decide which one can be decreased
     if (stfc1[which(cusRank == 5)] > stfc2[which(cusRank == 4)]) {
       list <- c(which(cusRank == 5))
-    } else if (stfc1[which(cusRank == 5)] <= stfc2[which(cusRank == 4)] &
-                 stfc1[which(cusRank == 4)] > stfc2[which(cusRank == 3)]) {
+    } else if (stfc1[which(cusRank == 4)] > stfc2[which(cusRank == 3)]) {
       list <- c(which(cusRank == 4), which(cusRank == 5))
-    } else if (stfc1[which(cusRank == 5)] <= stfc2[which(cusRank == 4)] &
-                 stfc1[which(cusRank == 4)] <= stfc2[which(cusRank == 3)] &
-                   stfc1[which(cusRank == 3)] > stfc2[which(cusRank == 2)]) {
+    } else if (stfc1[which(cusRank == 3)] > stfc2[which(cusRank == 2)]) {
       list <- c(which(cusRank == 3), which(cusRank == 4), which(cusRank == 5))
     } else {
       list <- c(which(cusRank == 2), which(cusRank == 3), which(cusRank == 4), which(cusRank == 5))
     }
     
-    ruinProb <- rep(0, length(list))
+    minRuinProb <- 1
     
     for (i in list) {
+      if(allocation[i] == 0){
+          next
+      }
+      temp.allocation <- allocation
+      temp.allocation[i] <- allocation[i] - stepWidth
       
-      allocation <- preIdeal_allocation
+      if(temp.allocation[i] <= 0){
+          temp.allocation[i] = 0
+      }
       
-      allocation[i] <- preIdeal_allocation[i] - stepWidth
-      
-      ruinProb[which(list == i)] <- pre_customized_ruin(allocation)
+      tempRuin <- pre_customized_ruin(temp.allocation)
+      if(tempRuin < minRuinProb){
+          minRuinProb = tempRuin
+          optProduct = i
+      } 
       
     }
     
-    preIdeal_allocation[list[which.min(ruinProb)]] <- preIdeal_allocation[list[which.min(ruinProb)]] - stepWidth
+    allocation[optProduct] <- max(0, allocation[optProduct] - stepWidth)
+    print(paste(caseID, allocation))
+    satisfaction <- allocation / ideal
     
-    satisfaction <- preIdeal_allocation / originalAllocation
-    
-    budget <- sum(preIdeal_allocation)
+    budget <- sum(allocation)
     
   }
     
   print(proc.time())
   
-  return(preIdeal_allocation)
+  return(allocation)
   
 }
