@@ -42,7 +42,7 @@ cashIn_WL <- 10000 * mat.death
 ## Cash Outflow: Premium
 
 if (gender == "M") {
-  cashOut_WL <- - rate_WL[which(rate_WL[ , 1] == currentAge), 2] * (pre_mcmc == 1)
+  rate_WL <- rate_WL[which(rate_WL[ , 1] == currentAge), 2] 
 } else {
-  cashOut_WL <- - rate_WL[which(rate_WL[ , 1] == currentAge), 3] * (pre_mcmc == 1)
+  rate_WL <- rate_WL[which(rate_WL[ , 1] == currentAge), 3]
 }
