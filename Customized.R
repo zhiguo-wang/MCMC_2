@@ -75,6 +75,9 @@ source(paste0(root, sourceCode, "Pre_CashFlow_DI.R"))
 source(paste0(root, sourceCode, "Pre_CashFlow_Mortgage.R"))
 
 source(paste0(root, sourceCode, "Pre_CashFlow_Rent.R"))
+source(paste0(root, sourceCode, "MarginalApproach.R"))
+source(paste0(root, sourceCode, "MarginalApproach_Hierarchy.R"))
+source(paste0(root, sourceCode, "Pre_CashFlow_IA.R"))
 
 
 pre_customized_ruin <- function(pre_allocation) {
@@ -114,7 +117,7 @@ pre_cashIn_TL <- abs(pre_allocation[2] / cashOut_TL[1]) * cashIn_TL
 
 ## 1.3 Whole Life Insurance (pre_allocation[3]: WL premium)
 
-pre_cashIn_WL <- abs(pre_allocation[3] / cashOut_WL[1]) * cashIn_WL
+pre_cashIn_WL <- abs(pre_allocation[3] / rate_WL) * cashIn_WL
 
 ## 1.4 Disability Insurance (pre_allocation[4]: DI premium)
 
@@ -158,7 +161,7 @@ pre_customized_cashIn <- cashIn_EmergencyFund + cashIn_InitialAssets +
   ee_cashIn_UL + ee_cashIn_WL + ee_cashIn_401k + ee_cashIn_OtherRet +
   er_cashIn_DI + er_cashIn_HC + er_cashIn_TL + er_cashIn_UL + er_cashIn_WL +
   er_cashIn_401k
-
+pre_customized_cashIn[1,] <- pre_customized_cashIn[1, ] + cashIn_IA
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #
 # 2. Cash Outflow
@@ -197,6 +200,9 @@ pre_customized_ruin <-
   abs(sum(pre_cusFinancialPosition_retAge[pre_cusFinancialPosition_retAge < 0])) / 
   sum(abs(pre_cusFinancialPosition_retAge))
 
+#update ending asset used for post model
+
+endNetAssetVec <<- pre_cusFinancialPosition_retAge
 return(pre_customized_ruin)
 
 }
