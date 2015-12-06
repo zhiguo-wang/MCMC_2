@@ -69,7 +69,7 @@ preIdeal_allocation[2] <- (mortBalance + totalEduCost + survIncome) / 10000 * (-
 
 tempLive <- max(pre_mat_income * (1 - repSurvivorIncome) * mat.death)
 
-preIdeal_allocation[3] <- (burialCost + tempLive) / 10000 * (- cashOut_WL[1])
+preIdeal_allocation[3] <- (burialCost + tempLive) / 10000 * rate_WL
 
 #++++++++++++++++++++++++++
 # 4. Disability Insurance
@@ -115,4 +115,8 @@ unitEnding401k <- function() {
   
 }
 
-preIdeal_allocation[5] <- max(- cashOut_RetirementNeeds[nrow(cashOut_RetirementNeeds), ]) / unitEnding401k()
+
+preIdeal_allocation[5] <- max(0, 
+                              quantile(
+                                  -vec_cashOut_RetirementNeeds[vec_cashOut_RetirementNeeds != 0] 
+                                  - cashIn_IA * (1 + depositInterest) ^ (nrow(pre_mcmc) - 1), 0.75)) / unitEnding401k()
