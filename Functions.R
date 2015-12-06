@@ -88,15 +88,15 @@ getMatrixLastH <- function(MCMatrix){
 # Return values is used in "Pre_CashFlow_ExistingEmployee&Employer.R"
 # Parameters:
 #   preYears: = retirementAge - currentAge
-getPreYieldCurves <- function(preYears){
+getPreYieldCurves <- function(duration){
     
     load(paste0(root, workspaces, "Pre_YieldCurves.RData"))
     
-    yield_Low <- get(paste0("yield_Low_", preYears))
+    yield_Low <- get(paste0("yield_Low_", duration))
     
-    yield_Mid <- get(paste0("yield_Mid_", preYears))
+    yield_Mid <- get(paste0("yield_Mid_", duration))
     
-    yield_Agg <- get(paste0("yield_Agg_", preYears))
+    yield_Agg <- get(paste0("yield_Agg_", duration))
         
     return(list("Low" = yield_Low, "Mid" = yield_Mid, "Agg" = yield_Agg))
 }
