@@ -36,6 +36,7 @@ marginalApproach <- function(idealAllocation) {
   
   while(budget > actBudget) {
     
+      stepWidth <- min(budget - actBudget, stepWidth)
     ## Term Life
     
     allocation <- idealAllocation
@@ -79,8 +80,6 @@ marginalApproach <- function(idealAllocation) {
     budget <- sum(idealAllocation)   
     
   }
-  
-  print(proc.time())
   
   return(idealAllocation)
   

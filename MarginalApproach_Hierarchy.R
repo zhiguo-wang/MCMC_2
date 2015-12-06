@@ -81,14 +81,15 @@ marginalApproach_hierarchy <- function(ideal) {
   ruinProb <- c(1.1, 0, 0, 0, 0)
   
   allocation <- ideal
-  
+  allocation[which(cusRank == 5)] <- allocation[which(cusRank == 5)] * (actBudget / sum(preIdeal_allocation))
   budget <- sum(allocation)
   
   while(budget > actBudget) {
-    
+    stepWidth <- min(budget - actBudget, stepWidth)
     stfc1 <- allocation / ideal
         
-    stfc2 <- max(0, allocation - stepWidth) / ideal
+    stfc2 <- (allocation - stepWidth) / ideal
+    stfc2[which(stfc2 < 0)] <- 0
     
     ## Under the hierarchy, decide which one can be decreased
     if (stfc1[which(cusRank == 5)] > stfc2[which(cusRank == 4)]) {
@@ -104,7 +105,7 @@ marginalApproach_hierarchy <- function(ideal) {
     minRuinProb <- 1
     
     for (i in list) {
-      if(allocation[i] == 0){
+      if(allocation[i] <= 0){
           next
       }
       temp.allocation <- allocation
@@ -123,14 +124,12 @@ marginalApproach_hierarchy <- function(ideal) {
     }
     
     allocation[optProduct] <- max(0, allocation[optProduct] - stepWidth)
-    print(paste(caseID, allocation))
+   
     satisfaction <- allocation / ideal
     
     budget <- sum(allocation)
-    
   }
     
-  print(proc.time())
   
   return(allocation)
   
