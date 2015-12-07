@@ -24,7 +24,9 @@ currentAge
 annualIncome
 gender
 retireAge
-life_ept <- sum(post_mcmc != 3)/(length(posCol))
+
+
+life_ept <- sum(post_mcmc != 3)/1000
 retireSalary <- annualIncome * (1 + wageInflation) ^ (retireAge - currentAge)
 annualSSB
 period <- nrow(post_mcmc)
@@ -134,6 +136,6 @@ if(!is.null(nrow(test_optr)) && nrow(test_optr)>1){
 names(test_optr) <- c("ANetA", "RuinProb", "Investment", "SPIA", "DSPIA", "LTC", "WL","shortfalls")
 
 
-
+post.naive <- post_naive()
 
 
