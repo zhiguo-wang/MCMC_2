@@ -13,9 +13,17 @@ colnames(pre.ActAdjResult) <- c("adjOPT H", "adjOPT Term", "adjOPT Perm", "adjOP
 post.IdealResult <- matrix(0, ncol = 7, nrow = dataSize)
 colnames(post.IdealResult) <- c("Ideal Starting Assets", "Ideal % Investment",  "Ideal % SPIA", "Ideal % DSPIA", "Ideal % LTC",
                                 "Ideal % Perm",    "IdealRP_Post")
+
+post.Ideal.naive <- matrix(0, ncol = 1, nrow = dataSize)
+colnames(post.Ideal.naive) <- c("PostIdealNaive RP")
+
 post.ActResult <- matrix(0, ncol = 7, nrow = dataSize)
 colnames(post.ActResult) <- c("Actual Starting Assets", "Actual % Investment", 
-                              "Actual % SPIA", "Actual % DSPIA", "Actual % LTC",    "Actual % Perm",	"ActualRP_Post")
+                              "Actual % SPIA", "Actual % DSPIA", "Actual % LTC",    "Actual % Perm",	"PostActOPT RP")
+
+post.Act.naive <- matrix(0, ncol = 1, nrow = dataSize)
+colnames(post.Act.naive) <- c("PostActNaive RP")
+
 rank <- matrix(0, ncol = 5, nrow = dataSize)
 colnames(rank) <- c("Rank H", "Rank Term", "Rank Perm", "Rank Disable", "Rank Retirement")
 
@@ -59,6 +67,9 @@ for(caseID in 1 : dataSize){
                                     test_optr["RuinProb"])
     print("Post-retirement ideal situation completed")
     
+    post.Ideal.naive[caseID, ] <- c(post.naive[2])
+    print("Post-retirement ideal situation Naive completed")
+    
     cusRank <- ranking()
     rank[caseID, ] <- c(cusRank[[1]], cusRank[[2]], cusRank[[3]], cusRank[[4]], cusRank[[5]])
     
@@ -96,8 +107,14 @@ for(caseID in 1 : dataSize){
                                   test_optr["WL"],
                                   test_optr["RuinProb"])
     print("Post-retirement Actual situation completed")
+    
+    post.Act.naive[caseID, ] <- c(post.naive[2])
+    print("Post-retirement Actual situation naive completed")
+    
     print(paste0("CASE [", caseID, "]. completed......"))
 }
 
 
-write.csv(cbind(pre.IdealResult, pre.ActResult,rank, pre.ActAdjResult, post.IdealResult, post.ActResult), file = paste0(root, output, "testResult1204001.csv"))
+write.csv(cbind(pre.IdealResult, pre.ActResult,rank, pre.ActAdjResult, 
+                post.IdealResult, post.ActResult, post.Ideal.naive, post.Act.naive), 
+          file = paste0(root, output, "testResult1204001.csv"))
