@@ -285,7 +285,7 @@ post_naive <- function() {
     
     #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     cashin_ssb <- matrix(0, period, st)
-    cashin_ssb[which(phycon != 3)] <- ssb
+    cashin_ssb[which(phycon != 3)] <- annualSSB
     #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -307,14 +307,24 @@ post_naive <- function() {
     cashout_bdle[which(phycon == 2)] <- ((a0 + a1 * retireSalary)+ (b0 + b1 * retireAge) + 
                                              (c0 + c1 * retireAge + c2 * retireSalary)) * 2
     cashout_bdle <- cashout_bdle * as.vector(lev)
-    #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
-    # 3.2.3 Cash Outflow_Death Expenses
+    # Whole life insurance premium
+    cashout_perm <- matrix(0, period, st)
+    cashout_perm[which(phycon == 1)] <- w_prem
     
-    #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    # Long term care premium
+    cashout_LTC <- matrix(0, period, st)
+    cashout_LTC[which(phycon == 1)] <- pre_LTC
+    
+    # Long Term care benefit
+    cashin_LTC <- matrix(0, period, st)
+    cashin_LTC[which(phycon == 2)] <- LTCb
+        
+    # Cash Outflow_Death Expenses
+    #   = Burial_cost - Whole Life Insurance benefit
     cashout_dea <- matrix(0, period, st)
     for (i in 1 : st) {
-        cashout_dea[min(which(phycon[ , i] == 3)), i] <- Burial_cost
+        cashout_dea[min(which(phycon[ , i] == 3)), i] <- Burial_cost - w_bene
     }
     #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
@@ -325,13 +335,15 @@ post_naive <- function() {
     IniA[1, ] <- FinSin
     NetA <- matrix(0, period, st)
     NetA[1, ] <- IniA[1, ] + cashin_ssb[1, ] -
-        cashout_bdle[1, ] - cashout_dea[1, ]
+        cashout_bdle[1, ] - cashout_dea[1, ] - cashout_dea[1, ] - cashout_LTC[1, ] - cashout_perm[1, ]
+        + cashin_LTC[1, ]
     
     # cumulate the net assets
     for (i in 1 : st) {
+        if(phycon[1, i] == 3) next
         for (j in 2 : min(which(phycon[ , i] == 3))) {
-            NetA[j, i] <- NetA[(j - 1), i] *YCP_M[j, i] + cashin_ssb[j, i] -
-                cashout_bdle[j, i] - cashout_dea[j, i] 
+            NetA[j, i] <- NetA[(j - 1), i] *YCP_M[j, i] + cashin_ssb[j, i] + cashin_LTC[j, i] -
+                cashout_bdle[j, i] - cashout_dea[j, i] - cashout_LTC[j, i] - cashout_perm[j, i]
         }
     }
     
@@ -340,7 +352,7 @@ post_naive <- function() {
     for (i in 1 : st) {
         WNetA[1, i] <- NetA[max(which(NetA[ , i] != 0)), i]
     }
-    
+    WNetA <- WNetA * (post_mcmc[1, ] != 3) * (endNetAssetVec >= 0)
     # aggregate ruin probability
     agg_ruin <- abs(sum(WNetA[which(WNetA < 0)])) / 
         (abs(sum(WNetA[which(WNetA < 0)])) + 
